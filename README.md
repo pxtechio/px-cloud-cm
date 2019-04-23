@@ -1,2 +1,2 @@
-# px-cloud-cm
+# pxcloud-cm
 PX:Cloud infrastructure configuration management.
