@@ -1,15 +1,52 @@
 version: '3'
 
 services:
-  db: 
-    image: postgres
-  web:
-    build: ./web/
-    command: python ./web/manage.py runserver 0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
 
+  postgres: 
+    restart: always
+    image: postgres:latest
+    env_file:
+      - config/db/postgres_env
+    networks:
+      - postgres_network
+    volumes:
+      - postgres_volume
+
+  djangoapp:
+    build: web/
+    command: gunicorn --bind 0:8000 mysite.wsgi:application
+    volumes: 
+      - ./web/:/opt/services/djangoapp/src
+      - static_volume:/opt/services/djangoapp/static
+      - media_volume:/opt/services/djangoapp/media
+    depends_on:
+      - postgres
+    networks:
+      - postgres_network
+      - nginx_network
+
+  nginx:
+    image: nginx:1.13
+    ports:
+      - 8000:80
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+      - static_volume:/opt/services/djangoapp/static
+      - media_volume:/opt/services/djangoapp/media
+    depends_on:
+      - djangoapp
+    networks:
+      - nginx_network
+
+
+networks:
+  nginx_network:
+    driver: bridge
+  postgres_network:
+    driver: bridge
+
+
+volumes:
+  postgres_volume: {}
+  static_volume: {}
+  media_volume: {}
