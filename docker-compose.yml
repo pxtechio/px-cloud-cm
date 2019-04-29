@@ -13,10 +13,10 @@ services:
       - postgres_volume
 
   djangoapp:
-    build: web/
+    build: djangoapp/
     command: gunicorn --bind 0:8000 mysite.wsgi:application
     volumes: 
-      - ./web/:/opt/services/djangoapp/src
+      - ./djangoapp/:/opt/services/djangoapp/src
       - static_volume:/opt/services/djangoapp/static
       - media_volume:/opt/services/djangoapp/media
     depends_on:
