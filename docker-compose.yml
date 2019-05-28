@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 
 services:
 
@@ -12,13 +12,13 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
 
-  djangoapp:
-    build: djangoapp/
+  django:
+    build: django/
     command: gunicorn --bind 0:8000 mysite.wsgi:application
     volumes: 
-      - ./djangoapp/:/opt/services/djangoapp/src
-      - static_volume:/opt/services/djangoapp/static
-      - media_volume:/opt/services/djangoapp/media
+      - ./django/:/opt/services/django/src
+      - static_volume:/opt/services/django/static
+      - media_volume:/opt/services/django/media
     depends_on:
       - postgres
     networks:
@@ -31,10 +31,10 @@ services:
       - 8000:80
     volumes:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
-      - static_volume:/opt/services/djangoapp/static
-      - media_volume:/opt/services/djangoapp/media
+      - static_volume:/opt/services/django/static
+      - media_volume:/opt/services/django/media
     depends_on:
-      - djangoapp
+      - django
     networks:
       - nginx_network
 

@@ -1,6 +1,6 @@
 FROM python:3.7
 
-ENV DJANGODIR="/opt/services/djangoapp/src"
+ENV DJANGODIR="/opt/services/django/src"
 ENV PYTHONUNBUFFERED 1
 
 RUN mkdir -p $DJANGODIR
